@@ -14,7 +14,7 @@ export OS_PASSWORD=admin
 sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf
 ssh root@${COMPUTE_IP} "sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf; /etc/init.d/openstack-nova-compute restart"
 
-PROJ_NAME="project_one"
+TENANT_NAME="project_one"
 USER_NAME="user"
 USER_PWD="user"
 USER_EMAIL="user@domain.com"
@@ -34,21 +34,21 @@ IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
 VM_NAME="cirros"
 
 #create a new project
-keystone tenant-create --name ${PROJ_NAME}
-PROJ_ID=`keystone tenant-list|grep ${PROJ_NAME}|awk '{print $2}'`
+keystone tenant-create --name ${TENANT_NAME}
+TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
 
 #create a new user and add it into the project
-keystone user-create --name=${USER_NAME} --pass={USER_PWD} --tenant-id ${PROJ_ID} --email=${USER_EMAIL}
+keystone user-create --name ${USER_NAME} --pass ${USER_PWD} --tenant-id ${TENANT_ID} --email ${USER_EMAIL}
 USER_ID=`keystone user-list|grep ${USER_NAME}|awk '{print $2}'`
 ROLE_ID=`keystone role-list|grep ${USER_ROLE}|awk '{print $2}'`
-keystone user-role-add --tenant-id ${PROJ_ID}  --user-id ${USER_ID} --role-id ${ROLE_ID}
+keystone user-role-add --tenant-id ${TENANT_ID}  --user-id ${USER_ID} --role-id ${ROLE_ID}
 
 #create a new internal net and subnet
-neutron net-create --tenant-id ${PROJ_ID} ${INT_NET_NAME}
-neutron subnet-create --tenant-id ${PROJ_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --dns_nameservers list=true 8.8.8.7 8.8.8.8
+neutron net-create --tenant-id ${TENANT_ID} ${INT_NET_NAME}
+neutron subnet-create --tenant-id ${TENANT_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --dns_nameservers list=true 8.8.8.7 8.8.8.8
 
 #create a router and add it to the subnet
-neutron router-create --tenant-id ${PROJ_ID} ${ROUTER_NAME}
+neutron router-create --tenant-id ${TENANT_ID} ${ROUTER_NAME}
 SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
 ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
 neutron router-interface-add ${ROUTER_ID} ${SUBNET_ID}
@@ -68,13 +68,14 @@ IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
 nova flavor-create --is-public true ex.tiny 10 1024 1 1
 
 #change to user and add security rules, then start a vm
-export OS_TENANT_NAME=${PROJ_NAME}
+export OS_TENANT_NAME=${TENANT_NAME}
 export OS_USERNAME=${USER_NAME}
 export OS_PASSWORD=${USER_PWD}
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
 
 #neutron floatingip-create ${EXT_NET_NAME}
+exit
 
 nova boot --image ${IMAGE_ID} --flavor 10 ${VM_NAME}
 sleep 5;
