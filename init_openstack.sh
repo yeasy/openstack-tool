@@ -64,8 +64,10 @@ EXT_NET_ID=`neutron net-list|grep ${EXT_NET_NAME}|awk '{print $2}'`
 neutron router-gateway-set ${ROUTER_ID} ${EXT_NET_ID}
 
 #upload a vm image
-glance add disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true < ${IMAGE_FILE} 
-IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
+if [ -f ${IMAGE_FILE} ]; then
+    glance add disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true < ${IMAGE_FILE} 
+    IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
+fi
 nova flavor-create --is-public true ex.tiny 10 1024 1 1
 
 #if in GRE, then reduce the MTU to improve throughput
