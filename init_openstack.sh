@@ -70,7 +70,7 @@ nova flavor-create --is-public true ex.tiny 10 1024 1 1
 
 #if in GRE, then reduce the MTU to improve throughput
 if [ ! -f /etc/neutron/dnsmasq-neutron.conf ]; then
-    echo "dhcp-option-force=26,1400" >  /etc/neutron/dnsmasq-neutron.conf
+    echo "dhcp-option-force=26,1454" >  /etc/neutron/dnsmasq-neutron.conf
 fi
 sed -i 's/# dnsmasq_config_file =/dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf/g' /etc/neutron/dhcp_agent.ini
 service neutron-dhcp-agent restart
