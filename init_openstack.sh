@@ -1,7 +1,8 @@
 #!/bin/sh
-
 #Create a project and add a new user with net/subnet
 
+
+#Those variables can be customized.
 CONTROL_IP=9.186.105.154
 COMPUTE_IP=9.186.105.240
 
@@ -66,6 +67,13 @@ neutron router-gateway-set ${ROUTER_ID} ${EXT_NET_ID}
 glance add disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true < ${IMAGE_FILE} 
 IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
 nova flavor-create --is-public true ex.tiny 10 1024 1 1
+
+#if in GRE, then reduce the MTU to improve throughput
+if [ ! -f /etc/neutron/dnsmasq-neutron.conf ]; then
+    echo "dhcp-option-force=26,1400" >  /etc/neutron/dnsmasq-neutron.conf
+fi
+sed -i 's/# dnsmasq_config_file =/dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf/g' /etc/neutron/dhcp_agent.ini
+service neutron-dhcp-agent restart
 
 #change to user and add security rules, then start a vm
 export OS_TENANT_NAME=${TENANT_NAME}
