@@ -1,21 +1,11 @@
 #!/bin/sh
-#Create a project and add a new user with net/subnet
-
+#Create a project and add a new user with net/subnet/vm image...
 
 #Those variables can be customized.
 CONTROL_IP=9.186.105.154
 COMPUTE_IP=9.186.105.240
-
-#source keystonerc_admin
-export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
-export OS_TENANT_NAME=admin
-export OS_USERNAME=admin
-export OS_PASSWORD=admin
-
-sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf
-ssh root@${COMPUTE_IP} "sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf; /etc/init.d/openstack-nova-compute restart"
-
 TENANT_NAME="project_one"
+TENANT_DESC="The first project"
 USER_NAME="user"
 USER_PWD="user"
 USER_EMAIL="user@domain.com"
@@ -33,9 +23,17 @@ EXT_IP_CIDR="9.186.105.0/24"
 IMAGE_NAME="cirros-0.3.0-x86_64"
 IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
 VM_NAME="cirros"
+#source keystonerc_admin
+export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
+export OS_TENANT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=admin
+
+
+## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
 
 #create a new project
-keystone tenant-create --name ${TENANT_NAME}
+keystone tenant-create --name ${TENANT_NAME} --description ${TENANT_DESC}
 TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
 
 #create a new user and add it into the project
@@ -87,6 +85,8 @@ nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
 #neutron floatingip-create ${EXT_NET_NAME}
 exit
 
+sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf
+ssh root@${COMPUTE_IP} "sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf; /etc/init.d/openstack-nova-compute restart"
 nova boot --image ${IMAGE_ID} --flavor 10 ${VM_NAME}
 sleep 5;
 VM_PORT_ID=`neutron port-list|grep ${SUBNET_ID}|awk '{print $2}'`
