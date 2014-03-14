@@ -18,5 +18,5 @@ After the installation, init by adding a user and a project with net/subnet/vm.
 ##clear_openstack.sh  
 Clear the machine which installs openstack.
 
-
-
+##keystonerc_admin
+An example keystonrc of the admin role.
