@@ -173,7 +173,7 @@ CONFIG_NOVA_VNCPROXY_HOST=192.168.122.100
 
 # A comma separated list of IP addresses on which to install the Nova
 # Compute services
-CONFIG_NOVA_COMPUTE_HOSTS=9.186.105.240
+CONFIG_NOVA_COMPUTE_HOSTS=192.168.122.101
 
 # The IP address of the server on which to install the Nova Conductor
 # service
