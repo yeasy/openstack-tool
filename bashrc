@@ -37,4 +37,4 @@ alias ovaddm=" sudo ovs-vsctl set-manager tcp:172.16.58.1:6640"
 export OS_USERNAME=admin
 export OS_PASSWORD=admin
 export OS_TENANT_NAME=admin
-export OS_AUTH_URL=http://192.168.105.154:5000/v2.0
+export OS_AUTH_URL=http://192.168.122.100:5000/v2.0
