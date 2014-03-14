@@ -2,8 +2,8 @@
 #Create a project and add a new user with net/subnet/vm image...
 
 #Those variables can be customized.
-CONTROL_IP=9.186.105.154
-COMPUTE_IP=9.186.105.240
+CONTROL_IP=192.168.122.100
+COMPUTE_IP=192.168.122.101
 TENANT_NAME="project_one"
 TENANT_DESC="The first project"
 USER_NAME="user"
@@ -16,10 +16,10 @@ EXT_NET_NAME="net_ext"
 EXT_SUBNET_NAME="subnet_ext"
 ROUTER_NAME="router"
 INT_IP_CIDR="192.168.0.0/24"
-FLOAT_IP_START="9.186.105.248"
-FLOAT_IP_END="9.186.105.254"
-EXT_GATEWAY="9.186.105.1"
-EXT_IP_CIDR="9.186.105.0/24"
+FLOAT_IP_START="192.168.122.200"
+FLOAT_IP_END="192.168.122.254"
+EXT_GATEWAY="192.168.122.1"
+EXT_IP_CIDR="192.168.122.0/24"
 IMAGE_NAME="cirros-0.3.0-x86_64"
 IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
 VM_NAME="cirros"
@@ -68,12 +68,12 @@ if [ -f ${IMAGE_FILE} ]; then
 fi
 nova flavor-create --is-public true ex.tiny 10 1024 1 1
 
-#if in GRE, then reduce the MTU to improve throughput
-if [ ! -f /etc/neutron/dnsmasq-neutron.conf ]; then
-    echo "dhcp-option-force=26,1454" >  /etc/neutron/dnsmasq-neutron.conf
-fi
-sed -i 's/# dnsmasq_config_file =/dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf/g' /etc/neutron/dhcp_agent.ini
-service neutron-dhcp-agent restart
+#if in GRE, then open this to reduce the MTU to improve throughput
+#if [ ! -f /etc/neutron/dnsmasq-neutron.conf ]; then
+#    echo "dhcp-option-force=26,1454" >  /etc/neutron/dnsmasq-neutron.conf
+#fi
+#sed -i 's/# dnsmasq_config_file =/dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf/g' /etc/neutron/dhcp_agent.ini
+#service neutron-dhcp-agent restart
 
 #change to user and add security rules, then start a vm
 export OS_TENANT_NAME=${TENANT_NAME}
@@ -83,10 +83,11 @@ nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
 
 #neutron floatingip-create ${EXT_NET_NAME}
-exit
 
 sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf
 ssh root@${COMPUTE_IP} "sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf; /etc/init.d/openstack-nova-compute restart"
+exit
+
 nova boot --image ${IMAGE_ID} --flavor 10 ${VM_NAME}
 sleep 5;
 VM_PORT_ID=`neutron port-list|grep ${SUBNET_ID}|awk '{print $2}'`
