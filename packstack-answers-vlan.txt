@@ -468,7 +468,7 @@ CONFIG_NAGIOS_HOST=192.168.122.100
 CONFIG_NAGIOS_PW=nagiosadmin
 
 # To subscribe each server to EPEL enter "y"
-CONFIG_USE_EPEL=n
+CONFIG_USE_EPEL=y
 
 # A comma separated list of URLs to any additional yum repositories
 # to install

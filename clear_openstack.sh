@@ -35,4 +35,4 @@ ovs-vsctl --if-exists del-port br-tun gre-1
 ovs-vsctl --if-exists del-port br-tun gre-2
 ovs-vsctl --if-exists del-br br-tun
 
-yum -y update; yum makecache
+yum clean all; yum -y update; yum makecache
