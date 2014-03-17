@@ -22,3 +22,11 @@ packstack --answer-file packstack-answers-vlan.txt
 
 #for gre mode
 #packstack --answer-file packstack-answers-gre.txt
+
+#Run some manual config on the management network if RDO does not do that
+ifconfig eth1 0.0.0.0
+ifconfig br-ex 192.168.122.100/24
+sed -i 's/^BOOTPROTO=static\|^NM_CONTROLLED=yes\|^IPADDR=\|^NETMASK=/d' /etc/sysconfig/network-scripts/ifcfg-eth1
+cp -f ifcfg-br-ex /etc/sysconfig/network-scripts/
+ovs-vsctl add-port br-ex eth1; service network restart
+
