@@ -16,6 +16,7 @@ Install openstack with RDO and the configuration file.
 
 ##init_openstack.sh
 After the installation, init by adding a user and a project with net/subnet/vm.
+Should get the [Cirros Image] (https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img) and put it under the directory.
 
 ##clear_openstack.sh  
 Clear the machine which installs openstack.
