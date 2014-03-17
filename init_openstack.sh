@@ -33,7 +33,7 @@ export OS_PASSWORD=admin
 ## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
 
 #create a new project
-keystone tenant-create --name ${TENANT_NAME} --description ${TENANT_DESC}
+keystone tenant-create --name ${TENANT_NAME} --description "${TENANT_DESC}"
 TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
 
 #create a new user and add it into the project
