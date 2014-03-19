@@ -27,8 +27,11 @@ RDO configuration file for multinode, GRE based.
 ##packstack-answers-vlan
 RDO configuration file for multinode, Vlan based.
 
-##bashrc  
-some useful alias for openstack operation.
+##bashrc
+A bashrc template. Please rename this to .bashrc, and put in your home directory.
+
+##bash_aliases
+Some useful aliases. Please rename this to .bash_aliases, and put in your home directory.
 
 ##keystonerc_admin
 An example keystonrc of the admin role.
