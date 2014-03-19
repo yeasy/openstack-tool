@@ -33,5 +33,8 @@ A bashrc template. Please rename this to .bashrc, and put in your home directory
 ##bash_aliases
 Some useful aliases. Please rename this to .bash_aliases, and put in your home directory.
 
+##bash_color
+Will enable colorful bash if supported. Please rename this to .bash_color, and put in your home directory.
+
 ##keystonerc_admin
 An example keystonrc of the admin role.
