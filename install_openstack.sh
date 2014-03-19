@@ -12,7 +12,7 @@ ssh 192.168.122.101 "service ntpd stop"
 
 yum install -y openstack-packstack
 
-yum --enablerepo=epel -y install nrpe nagios-plugins
+yum --enablerepo=epel -y install nrpe nagios-plugins wget
 
 #This will generate an answerfile template for allinone
 #packstack --gen-answer-file packstack-answers-template.txt

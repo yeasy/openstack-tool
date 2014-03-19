@@ -33,9 +33,14 @@ EXT_GATEWAY="192.168.122.1"
 EXT_IP_CIDR="192.168.122.0/24"
 IMAGE_NAME="cirros-0.3.0-x86_64"
 IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
+IMAGE_URL=https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+#if not existed will download from ${IMAGE_URL}
 VM_NAME="cirros"
 
 ## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
+
+#prepare the vm image
+[ -f ${IMAGE_FILE} ] || wget ${IMAGE_URL}
 
 #create a new project
 keystone tenant-create --name ${TENANT_NAME} --description "${TENANT_DESC}"
