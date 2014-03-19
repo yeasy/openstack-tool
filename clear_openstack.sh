@@ -41,11 +41,16 @@ iptables -F
 iptables -X
 iptables -Z
 iptables -A INPUT -i lo -j ACCEPT
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
+#ssh
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+#VNC/X-window
+iptables -A INPUT -p tcp -m state --state NEW -m tcp -m multiport --dports 5901:5903,6001:6003 -j ACCEPT
+iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -A FORWARD -j REJECT --reject-with icmp-host-prohibited
 iptables -P OUTPUT ACCEPT
 
 service iptables save
