@@ -21,7 +21,7 @@ alias vsh="sudo virsh list"
 alias lsof6='lsof -P -iTCP -sTCP:LISTEN | grep 66'
 alias vsh="sudo virsh list"
 alias ns="sudo ip netns exec "
-lias ipt="iptables --line-numbers -vnL"
+alias ipt="iptables --line-numbers -vnL"
 
 # OVS Aliases
 alias ovstart='sudo /usr/share/openvswitch/scripts/ovs-ctl start'
