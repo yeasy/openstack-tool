@@ -1,9 +1,20 @@
 #!/bin/sh
 #Create a project and add a new user with net/subnet/vm image...
+#TODO: Delete the created content to restore a fresh environment.
 
-#Those variables can be customized.
+## THOSE VARIABLES CAN BE CUSTOMIZED. ##
+
+# Environment information
 CONTROL_IP=192.168.122.100
 COMPUTE_IP=192.168.122.101
+ADMIN_NAME=admin #the name of the default admin user
+#source keystonerc_admin
+export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
+export OS_TENANT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=admin
+
+# The tenant, user, net, etc... to be created
 TENANT_NAME="project_one"
 TENANT_DESC="The first project"
 USER_NAME="user"
@@ -23,12 +34,6 @@ EXT_IP_CIDR="192.168.122.0/24"
 IMAGE_NAME="cirros-0.3.0-x86_64"
 IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
 VM_NAME="cirros"
-#source keystonerc_admin
-export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
-export OS_TENANT_NAME=admin
-export OS_USERNAME=admin
-export OS_PASSWORD=admin
-
 
 ## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
 
@@ -53,7 +58,7 @@ ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
 neutron router-interface-add ${ROUTER_ID} ${SUBNET_ID}
 
 #create a new external net and subnet
-ADMIN_ID=`keystone tenant-list|grep admin|awk '{print $2}'`
+ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
 neutron net-create --tenant-id ${ADMIN_ID} ${EXT_NET_NAME} --router:external=True
 neutron subnet-create --tenant-id ${ADMIN_ID} --name ${EXT_SUBNET_NAME} --allocation-pool start=${FLOAT_IP_START},end=${FLOAT_IP_END} --gateway ${EXT_GATEWAY} ${EXT_NET_NAME} ${EXT_IP_CIDR} --enable_dhcp=False
 
