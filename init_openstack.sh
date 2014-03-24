@@ -54,13 +54,14 @@ keystone user-role-add --tenant-id ${TENANT_ID}  --user-id ${USER_ID} --role-id 
 
 #create a new internal net and subnet
 neutron net-create --tenant-id ${TENANT_ID} ${INT_NET_NAME}
+INT_NET_ID=`neutron net-list|grep ${INT_NET_NAME}|awk '{print $2}'`
 neutron subnet-create --tenant-id ${TENANT_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --dns_nameservers list=true 8.8.8.7 8.8.8.8
 
 #create a router and add it to the subnet
 neutron router-create --tenant-id ${TENANT_ID} ${ROUTER_NAME}
-SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
+INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
 ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
-neutron router-interface-add ${ROUTER_ID} ${SUBNET_ID}
+neutron router-interface-add ${ROUTER_ID} ${INT_SUBNET_ID}
 
 #create a new external net and subnet
 ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
@@ -76,7 +77,8 @@ if [ -f ${IMAGE_FILE} ]; then
     glance add disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true < ${IMAGE_FILE} 
     IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
 fi
-nova flavor-create --is-public true ex.tiny 10 1024 1 1
+nova flavor-create --is-public true ex.tiny 10 512 2 1
+nova flavor-create --is-public true ex.small 11 512 20 1
 
 #if in GRE, then open this to reduce the MTU to improve throughput
 #if [ ! -f /etc/neutron/dnsmasq-neutron.conf ]; then
@@ -96,8 +98,9 @@ nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
 
 sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf
 ssh root@${COMPUTE_IP} "sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf; /etc/init.d/openstack-nova-compute restart"
-exit
+sleep 1
+nova boot ${VM_NAME} --image ${IMAGE_ID} --flavor 10 --nic net-id=${INT_NET_ID}
+sleep 2;
 
-nova boot --image ${IMAGE_ID} --flavor 10 ${VM_NAME}
-sleep 5;
-VM_PORT_ID=`neutron port-list|grep ${SUBNET_ID}|awk '{print $2}'`
+exit
+VM_PORT_ID=`neutron port-list|grep ${INT_SUBNET_ID}|awk '{print $2}'`
