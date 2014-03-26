@@ -24,14 +24,14 @@ alias ns="sudo ip netns exec "
 alias ipt="iptables --line-numbers -vnL"
 
 # OVS Aliases
-alias ovstart='sudo /usr/share/openvswitch/scripts/ovs-ctl start'
-alias ovs='sudo ovs-vsctl show'
 alias ovapd="sudo ovs-appctl bridge/dump-flows "
 alias ovaps="sudo ovs-appctl fdb/show "
+alias ovaf='sudo ovs-ofctl add-flow'
 alias ovdpd=" sudo ovs-dpctl dump-flows "
 alias ovdps='sudo ovs-dpctl show'
-alias ovof='sudo ovs-ofctl '
 alias ovofd="sudo ovs-ofctl dump-flows"
+alias ovofs="sudo ovs-ofctl show"
+alias ovs='sudo ovs-vsctl show'
 alias ovsd='sudo ovsdb-client dump'
 alias logs="sudo journalctl -n 300 --no-pager"
 alias ologs="tail -n 300 /var/log/openvswitch/ovs-vswitchd.log"
@@ -43,3 +43,4 @@ alias ofport=" sudo ovs-ofctl -O OpenFlow13 dump-ports br-int"
 alias del=" sudo ovs-ofctl -O OpenFlow13 del-flows "
 alias ovdelm=" sudo ovs-vsctl del-manager"
 alias ovaddm=" sudo ovs-vsctl set-manager tcp:172.16.58.1:6640"
+alias ovstart='sudo /usr/share/openvswitch/scripts/ovs-ctl start'
