@@ -38,3 +38,8 @@ Will enable colorful bash if supported. Please rename this to .bash_color, and p
 
 ##keystonerc_admin
 An example keystonrc of the admin role.
+
+
+##ovs_mon
+This script can monitor the OpenvSwitches by filtering useful rules from them.
+The rules are re-formated for better observation.
