@@ -37,6 +37,6 @@ for arg in "$@"; do
     pkt=`echo $line|cut -d " " -f 2`
     rule=`echo $line|cut -d " " -f 3`
     action=`echo $line|cut -d " " -f 4`
-    printf "%-6s %-10s %-60s %s\n" $priority $pkt $rule $action
+    printf "%-6s %-12s %-60s %s\n" $priority $pkt $rule $action
     done
 done
