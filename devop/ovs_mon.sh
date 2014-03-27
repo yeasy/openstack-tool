@@ -10,8 +10,9 @@ tmp_file="/tmp/tmp_result.switch"
 
 [ -f  $tmp_file ] || touch $tmp_file
 
+printf "%-6s %-12s %-64s %s\n" "PRI" "PKT" "MATCH" "ACTION"
 for arg in "$@"; do 
-    echo "###"$arg
+    echo "==="$arg"==="
     if ! $SHOW_BR |grep -q $arg ; then
         echo -e "Non-Exist\n"
         continue
@@ -20,7 +21,7 @@ for arg in "$@"; do
     $DUMP_FLOWS $arg|sed -n '/actions=/p'|grep -v "n_packets=0" >$tmp_file
     while read line; do 
         nf=`echo $line|grep -o " "|wc -l`
-        pkt=`echo $line|cut -d ' ' -f 4| sed -e 's/n_packets/PKT/'| sed -e 's/,//'`
+        pkt=`echo $line|cut -d ' ' -f 4| sed -e 's/n_packets=//'| sed -e 's/,//'`
         pri_match=`echo $line|cut -d ' ' -f $nf|sed -e 's/_tci//'| sed -e 's/priority=//'`
         if [ `expr match "$pri_match" ".*,"` -ne 0 ]; then 
             priority=`echo $pri_match|cut -d ',' -f 1| sed -e 's/,//'` 
@@ -29,14 +30,16 @@ for arg in "$@"; do
             priority=$pri_match
             match="all"
         fi
-        action=`echo $line|cut -d ' ' -f $((nf+1))| sed -e 's/actions/ACT/'`
+        action=`echo $line|cut -d ' ' -f $((nf+1))| sed -e 's/actions=//'`
         result=${result}$priority"\t"$pkt"\t"$match"\t"$action"\n"
     done < $tmp_file
     echo -e $result|sort -n -r | while read line; do 
-        priority=`echo $line |cut -d " " -f 1`
-        pkt=`echo $line|cut -d " " -f 2`
-        match=`echo $line|cut -d " " -f 3`
-        action=`echo $line|cut -d " " -f 4`
-        printf "%-6s %-12s %-64s %s\n" $priority $pkt $rule $action
+        if [ -n "$line" ] ; then
+            priority=`echo $line |cut -d " " -f 1`
+            pkt=`echo $line|cut -d " " -f 2`
+            match=`echo $line|cut -d " " -f 3`
+            action=`echo $line|cut -d " " -f 4`
+            printf "%-6s %-12s %-64s %s\n" $priority $pkt $match $action
+        fi
     done
 done
