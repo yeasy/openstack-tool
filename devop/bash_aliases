@@ -44,4 +44,4 @@ alias del=" sudo ovs-ofctl -O OpenFlow13 del-flows "
 alias ovdelm=" sudo ovs-vsctl del-manager"
 alias ovaddm=" sudo ovs-vsctl set-manager tcp:172.16.58.1:6640"
 alias ovstart='sudo /usr/share/openvswitch/scripts/ovs-ctl start'
-alias ovsm="sudo ovs_mon.sh "
+alias ovsm="ovs_mon.sh "

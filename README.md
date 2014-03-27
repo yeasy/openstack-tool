@@ -44,11 +44,9 @@ Some useful aliases. Please rename this to .bash_aliases, and put in your home d
 ##bash_color
 Will enable colorful bash if supported. Please rename this to .bash_color, and put in your home directory.
 
-
-
 ##ovs_mon
 This script can monitor the OpenvSwitches by filtering useful rules from them.
-The rules are re-formated for better observation.
+The rules are re-formated for better observation. Just put it in your PATH such as /usr/local/bin/.
 
 The original way to observe the rules in a switch (e.g., s1) is using ovs-ofctl, while it's hard to explore when there're lots of rules
 ```
