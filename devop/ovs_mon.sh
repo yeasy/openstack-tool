@@ -10,9 +10,10 @@ tmp_file="/tmp/tmp_result.switch"
 
 [ -f  $tmp_file ] || touch $tmp_file
 
-printf "%-6s %-12s %-64s %s\n" "PRI" "PKT" "MATCH" "ACTION"
+#printf "%6s \033[01;32m%-12s\033[0m \033[01;34m%-64s\033[0m \033[01;31m%s\033[0m\n" "PRI" "PKT" "MATCH" "ACTION"
+printf "\033[01;31m%6s %-12s %-64s %s\033[0m\n" "PRI" "PKT" "MATCH" "ACTION"
 for arg in "$@"; do 
-    echo "==="$arg"==="
+    echo -e "\E[34m--"$arg"--\033[0m"
     if ! $SHOW_BR |grep -q $arg ; then
         echo -e "Non-Exist\n"
         continue
@@ -39,7 +40,8 @@ for arg in "$@"; do
             pkt=`echo $line|cut -d " " -f 2`
             match=`echo $line|cut -d " " -f 3`
             action=`echo $line|cut -d " " -f 4`
-            printf "%-6s %-12s %-64s %s\n" $priority $pkt $match $action
+            printf "%6s %-12s %-64s %s\n" $priority $pkt $match $action
+            #printf "%6s \033[01;32m%-12s\033[0m \033[01;34m%-64s\033[0m \033[01;31m%s\033[0m\n" $priority $pkt $match $action
         fi
     done
 done
