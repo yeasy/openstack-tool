@@ -18,7 +18,7 @@ for arg in "$@"; do
     result=""
     $DUMP_CMD $arg|sed -n '/actions=/p'|grep -v "n_packets=0" >$tmp_file
     while read line; do 
-        line=`echo $line|sed -e 's/idle_timeout=[0-9]\+,//'`
+        line=`echo $line|sed -e 's/idle_timeout=[0-9]\+,//'|sed -e 's/idle_age=[0-9]\+, //'|sed -e 's/hard_age=[0-9]\+, //'`
         pkt=`echo $line|cut -d ' ' -f 4| sed -e 's/n_packets/PKT/'| sed -e 's/,//'`
         priority_rule=`echo $line|cut -d ' ' -f 6| sed -e 's/_tci//'| sed -e 's/priority=//'`
         if [ `expr match "$priority_rule" ".*,"` -ne 0 ]; then 
