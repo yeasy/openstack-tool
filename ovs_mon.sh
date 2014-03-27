@@ -18,11 +18,12 @@ for arg in "$@"; do
     result=""
     $DUMP_CMD $arg|sed -n '/actions=/p'|grep -v "n_packets=0" >$tmp_file
     while read line; do 
+        line=`echo $line|sed -e 's/idle_timeout=[0-9]\+,//'`
         pkt=`echo $line|cut -d ' ' -f 4| sed -e 's/n_packets/PKT/'| sed -e 's/,//'`
-        priority_rule=`echo $line|cut -d ' ' -f 6| sed -e 's/priority=//'`
+        priority_rule=`echo $line|cut -d ' ' -f 6| sed -e 's/_tci//'| sed -e 's/priority=//'`
         if [ `expr match "$priority_rule" ".*,"` -ne 0 ]; then 
             priority=`echo $priority_rule|cut -d ',' -f 1| sed -e 's/,//'` 
-            rule=`echo $priority_rule|cut -d ',' -f 2-`
+            rule=`echo $priority_rule|cut -d ',' -f 2-| sed -e 's/\(..:\)\1\{1,\}/\1:/g'`
         else
             priority=$priority_rule
             rule="all"
@@ -36,6 +37,6 @@ for arg in "$@"; do
     pkt=`echo $line|cut -d " " -f 2`
     rule=`echo $line|cut -d " " -f 3`
     action=`echo $line|cut -d " " -f 4`
-    printf "%-8s %-8s %-60s %s\n" $priority $pkt $rule $action
+    printf "%-6s %-10s %-60s %s\n" $priority $pkt $rule $action
     done
 done
