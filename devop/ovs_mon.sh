@@ -12,7 +12,10 @@ tmp_file="/tmp/tmp_result.switch"
 
 for arg in "$@"; do 
     echo "###"$arg
-    $SHOW_BR |grep -q $arg || echo "Non-Exist" && continue
+    if ! $SHOW_BR |grep -q $arg ; then
+        echo -e "Non-Exist\n"
+        continue
+    fi
     result=""
     $DUMP_FLOWS $arg|sed -n '/actions=/p'|grep -v "n_packets=0" >$tmp_file
     while read line; do 
