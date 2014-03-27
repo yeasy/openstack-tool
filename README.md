@@ -1,7 +1,8 @@
 openstack-tool
 ==============
 
-Some useful tools for openstack deployment, deployment and operation.
+Some useful tools for openstack deployment, deployment and operation. 
+The `deploy` directory contains tools for the deployment, while the `devop` one is for development and operation.
 
 
 #Deploy
@@ -15,20 +16,20 @@ The deployment is suggested to utilize [RDO](openstack.redhat.com).
 * Compute Server: `10.0.0.101 (eth0)`, `192.168.122.101 (eth1)`
 
 ##install_openstack.sh
-Install openstack with RDO and the configuration file.
+Install openstack based on RDO and the configuration template.
 
 ##init_openstack.sh
 After the installation, init by adding a user and a project with net/subnet/vm.
-Should get the [Cirros Image] (https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img) and put it under the directory.
+Recommend to download the [Cirros Image] (https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img) and put it under the directory. Otherwise the tool will automatically do it.
 
 ##clear_openstack.sh  
-Clear the machine which installs openstack.
+Clear the machine which has installed openstack.
 
 ##packstack-answers-gre
-RDO configuration file for multinode, GRE based.
+RDO configuration template for multinode, GRE based.
 
 ##packstack-answers-vlan
-RDO configuration file for multinode, Vlan based.
+RDO configuration template for multinode, Vlan based.
 
 ##keystonerc_admin
 A reference keystonrc of the admin role.
@@ -36,17 +37,17 @@ A reference keystonrc of the admin role.
 #Devop
 
 ##bashrc
-A bashrc template. Please rename this to .bashrc, and put in your home directory.
+A bashrc template. Please rename this to `.bashrc`, and put in your home directory.
 
 ##bash_aliases
-Some useful aliases. Please rename this to .bash_aliases, and put in your home directory.
+Some useful aliases. Please rename this to `.bash_aliases`, and put in your home directory.
 
 ##bash_color
-Will enable colorful bash if supported. Please rename this to .bash_color, and put in your home directory.
+Enable colorful bash if supported. Please rename this to `.bash_color`, and put in your home directory.
 
 ##ovs_mon
-This script can monitor the OpenvSwitches by filtering useful rules from them.
-The rules are re-formated for better observation. Just put it in your PATH such as /usr/local/bin/.
+This script can monitor multiple OpenvSwitch rules by filtering useful ones and reformat them.
+Just put it in your local PATH such as /usr/local/bin/.
 
 The original way to observe the rules in a switch (e.g., s1) is using ovs-ofctl, while it's hard to explore when there're lots of rules
 ```
