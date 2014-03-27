@@ -1,15 +1,18 @@
 openstack-tool
 ==============
 
-Some useful tools for openstack deployment and usage, based on [RDO](openstack.redhat.com).
+Some useful tools for openstack deployment, deployment and operation.
 
-#Server configuration
+
+#Deploy
+
+The deployment is suggested to utilize [RDO](openstack.redhat.com).
+
+##Server configuration
 * Managment   Network: `192.168.122.0/24`
 * Data        Network: `10.0.0.0/24`
 * Control Server: `10.0.0.100 (eth0)`, `192.168.122.100 (eth1)`
 * Compute Server: `10.0.0.101 (eth0)`, `192.168.122.101 (eth1)`
-
-#Document
 
 ##install_openstack.sh
 Install openstack with RDO and the configuration file.
@@ -27,6 +30,11 @@ RDO configuration file for multinode, GRE based.
 ##packstack-answers-vlan
 RDO configuration file for multinode, Vlan based.
 
+##keystonerc_admin
+A reference keystonrc of the admin role.
+
+#Devop
+
 ##bashrc
 A bashrc template. Please rename this to .bashrc, and put in your home directory.
 
@@ -36,8 +44,6 @@ Some useful aliases. Please rename this to .bash_aliases, and put in your home d
 ##bash_color
 Will enable colorful bash if supported. Please rename this to .bash_color, and put in your home directory.
 
-##keystonerc_admin
-An example keystonrc of the admin role.
 
 
 ##ovs_mon
@@ -66,10 +72,10 @@ $ ovsm s1 s2 s3
                                                                                
 ###s2
 2400     PKT=5    dl_type=0x88cc                                               ACT=CONTROLLER:65535
-2400     PKT=2    dl_dst=ff:ff:ff:ff:ff:ff                                     ACT=CONTROLLER:65535
+2400     PKT=2    dl_dst=ff::ff                                                ACT=CONTROLLER:65535
 2400     PKT=18   arp                                                          ACT=CONTROLLER:65535
-1401     PKT=1    ip,dl_src=00:00:00:00:00:02,nw_src=10.0.0.2                  ACT=CONTROLLER:65535
-1401     PKT=1    ip,dl_src=00:00:00:00:00:01,nw_src=10.0.0.1                  ACT=CONTROLLER:65535
+1401     PKT=1    ip,dl_src=00::02,nw_src=10.0.0.2                             ACT=CONTROLLER:65535
+1401     PKT=1    ip,dl_src=00::01,nw_src=10.0.0.1                             ACT=CONTROLLER:65535
                                                                                
 ###s3
 2400     PKT=5    dl_type=0x88cc                                               ACT=CONTROLLER:65535
