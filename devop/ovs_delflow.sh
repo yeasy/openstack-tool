@@ -49,14 +49,17 @@ del_flow=$pri","$match" "$action
 
 $DUMP_FLOWS $1|grep "cookie="| while read line; do
     if echo $line |grep -q "$del_flow"; then
-        echo "del-flow:"$line
+        other=${line%$del_flow}
+        echo -e "del-flow:"$other"\E[31m"$del_flow"\033[0m"
     else
         echo $line >> $flow_file
     fi
 done
 
 echo "Before [ovs-ofctl dump-flows $1]:"
-$DUMP_FLOWS $1
+$DUMP_FLOWS $1|while read line; do
+    echo -e $(echo $line |sed -e "s/$del_flow/\\\E[31m${del_flow}\\\033[0m/")
+done
 $REPLACE_FLOWS $1 $flow_file
 echo "After [ovs-ofctl dump-flows $1]:"
 $DUMP_FLOWS $1
