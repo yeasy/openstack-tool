@@ -46,7 +46,7 @@ Some useful aliases. Please rename this to `.bash_aliases`, and put in your home
 Enable colorful bash if supported. Please rename this to `.bash_color`, and put in your home directory.
 
 ##ovs_mon
-This script can monitor multiple OpenvSwitch rules by filtering useful ones and reformat them.
+This script can monitor multiple OpenvSwitch rules by filtering useful ones and reformat them. It even support colorful output!
 Just put it in your local PATH such as /usr/local/bin/.
 
 The original way to observe the rules in a switch (e.g., s1) is using ovs-ofctl, while it's hard to explore when there're lots of rules
@@ -79,3 +79,6 @@ $ ovsm s1 s2 s3
 ###s3
 2400     PKT=5    dl_type=0x88cc                                               ACT=CONTROLLER:65535
 ```
+
+##ovs_delflow
+This tool support specifically del a flow from ovs. The flow can be given with priority and actions, e.g., `priority=100,ip actions=OUTPUT:1`, or `priority=100 ip,nw_proto=2 actions=OUTPUT:2`.
