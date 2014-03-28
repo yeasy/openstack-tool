@@ -14,10 +14,7 @@ tmp_file="/tmp/tmp_result.switch"
 printf "\033[01;31m%6s %-12s %-64s %s\033[0m\n" "PRI" "PKT" "MATCH" "ACTION"
 for arg in "$@"; do 
     echo -e "\E[34m--"$arg"--\033[0m"
-    if ! $SHOW_BR |grep -q $arg ; then
-        echo -e "Non-Exist\n"
-        continue
-    fi
+    ! $SHOW_BR|grep -q $arg && echo -e "\E[36mNon-Exist\033[0m" && continue
     result=""
     $DUMP_FLOWS $arg|sed -n '/actions=/p'|grep -v "n_packets=0" >$tmp_file
     while read line; do 
