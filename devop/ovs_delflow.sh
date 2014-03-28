@@ -55,4 +55,8 @@ $DUMP_FLOWS $1|grep "cookie="| while read line; do
     fi
 done
 
+echo "Before [ovs-ofctl dump-flows $1]:"
+$DUMP_FLOWS $1
 $REPLACE_FLOWS $1 $flow_file
+echo "After [ovs-ofctl dump-flows $1]:"
+$DUMP_FLOWS $1

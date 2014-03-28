@@ -6,9 +6,11 @@
 
 DUMP_FLOWS="sudo ovs-ofctl dump-flows"
 SHOW_BR="sudo ovs-vsctl show"
-tmp_file="/tmp/tmp_result.switch"
+tmp_file="/tmp/tmp_switch_flows"
 
 [ -f  $tmp_file ] || touch $tmp_file
+
+>$tmp_file
 
 #printf "%6s \033[01;32m%-12s\033[0m \033[01;34m%-64s\033[0m \033[01;31m%s\033[0m\n" "PRI" "PKT" "MATCH" "ACTION"
 printf "\033[01;31m%6s %-12s %-64s %s\033[0m\n" "PRI" "PKT" "MATCH" "ACTION"
