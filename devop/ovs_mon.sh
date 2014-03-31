@@ -18,7 +18,7 @@ for arg in "$@"; do
     echo -e "\E[34m--"$arg"--\033[0m"
     ! $SHOW_BR|grep -q $arg && echo -e "\E[36mNon-Exist\033[0m" && continue
     result=""
-    $DUMP_FLOWS $arg|sed -n '/actions=/p'|grep -v "n_packets=0" >$tmp_file
+    $DUMP_FLOWS $arg|sed -n '/actions=/p' >$tmp_file
     while read line; do 
         nf=`echo $line|grep -o " "|wc -l`
         pkt=`echo $line|cut -d ' ' -f 4| sed -e 's/n_packets=//'| sed -e 's/,//'`
