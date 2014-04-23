@@ -67,4 +67,8 @@ do
     [[ $name == qdhcp-* || $name == qrouter-* ]] &&  ip netns del $name
 done
 
+#clean some configuration files
+rm -rf /etc/openstack-dashboard/
+rm -rf /etc/neutron/
+
 #yum clean all; yum makecache; yum -y update
