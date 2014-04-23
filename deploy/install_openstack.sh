@@ -3,7 +3,8 @@
 echo "Recommend to run the ./clear_openstack.sh first, especially for alreay installed machines."
 
 #This will add the rdo-release, puppetlabs and foreman yum source
-yum install -y http://rdo.fedorapeople.org/openstack/openstack-havana/rdo-release-havana.rpm  
+#yum install -y http://rdo.fedorapeople.org/openstack/openstack-havana/rdo-release-havana.rpm  
+sudo yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
 
 yum update -y
 
@@ -18,7 +19,8 @@ yum --enablerepo=epel -y install nrpe nagios-plugins wget
 #packstack --gen-answer-file packstack-answers-template.txt
 
 #for vlan mode
-packstack --answer-file packstack-answers-vlan.txt
+#packstack --answer-file packstack-answers-vlan.txt
+packstack --answer-file packstack-answers-vlan-icehouse.txt || exit 1;
 
 #for gre mode
 #packstack --answer-file packstack-answers-gre.txt
@@ -28,5 +30,5 @@ ifconfig eth1 0.0.0.0
 ifconfig br-ex 192.168.122.100/24
 sed -i 's/^BOOTPROTO=static\|^NM_CONTROLLED=yes\|^IPADDR=\|^NETMASK=/d' /etc/sysconfig/network-scripts/ifcfg-eth1
 cp -f ifcfg-br-ex /etc/sysconfig/network-scripts/
-ovs-vsctl add-port br-ex eth1; service network restart
+ovs-vsctl --may-exist add-port br-ex eth1; service network restart
 
