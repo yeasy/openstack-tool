@@ -3,13 +3,13 @@
 echo "Recommend to run the ./clear_openstack.sh first, especially for alreay installed machines."
 
 #This will add the rdo-release, puppetlabs and foreman yum source
-#yum install -y http://rdo.fedorapeople.org/openstack/openstack-havana/rdo-release-havana.rpm  
 sudo yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
 
 yum update -y
 
 service ntpd stop
 ssh 192.168.122.101 "service ntpd stop"
+ssh 192.168.122.102 "service ntpd stop"
 
 yum install -y openstack-packstack
 
@@ -19,7 +19,6 @@ yum --enablerepo=epel -y install nrpe nagios-plugins wget
 #packstack --gen-answer-file packstack-answers-template.txt
 
 #for vlan mode
-#packstack --answer-file packstack-answers-vlan.txt
 packstack --answer-file packstack-answers-vlan-icehouse.txt || exit 1;
 
 #for gre mode
