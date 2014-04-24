@@ -74,5 +74,6 @@ done
 #clean some configuration files
 rm -rf /etc/openstack-dashboard/
 rm -rf /etc/neutron/
+rm -rf /etc/nagios/
 
 #yum clean all; yum makecache; yum -y update
