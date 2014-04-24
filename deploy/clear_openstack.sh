@@ -5,11 +5,14 @@ for x in $(virsh list --all | grep instance- | awk '{print $2}') ; do
 done ;
 
 # Remove installed packages
-yum remove -y nrpe "*nagios*" puppet "*ntp*" "*openstack*" \
-"*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" \
-mysql mysql-server httpd "*memcache*" scsi-target-utils \
+yum remove -y nrpe "*nagios*" puppet "*ntp*" "*openstack*" "*horizon*" \
+"*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" "neutron" \
+"ceilometer" "*mysql*" httpd "*memcache*" scsi-target-utils \
 iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release \
-qpid-cpp-server rabbitmq-server python-ceilometer;
+"*qpid*" "*rabbitmq*" "*galera*" "*python-oslo*" "*python-six*" \
+"*python-croniter*" "*python-crypto*" "*python-flask*" "*networkx*" \
+"*oauthlib*" "*paramiko*" "*pecan*" "*pycadf*" "*singledispatch*" \
+"*taskflow*" "*troveclient*" "*python-wsme*";
 
 ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
 
