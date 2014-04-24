@@ -9,7 +9,7 @@ yum remove -y nrpe "*nagios*" puppet "*ntp*" "*openstack*" \
 "*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" \
 mysql mysql-server httpd "*memcache*" scsi-target-utils \
 iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release \
-qpid-cpp-server rabbitmq-server;
+qpid-cpp-server rabbitmq-server python-ceilometer;
 
 ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
 
