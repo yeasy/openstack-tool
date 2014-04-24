@@ -8,7 +8,7 @@ done ;
 yum remove -y nrpe "*nagios*" puppet "*ntp*" "*openstack*" \
 "*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" \
 mysql mysql-server httpd "*memcache*" scsi-target-utils \
-iscsi-initiator-utils perl-DBI perl-DBD-MySQL ;
+iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release;
 
 ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
 

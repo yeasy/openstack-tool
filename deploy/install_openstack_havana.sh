@@ -19,7 +19,7 @@ yum --enablerepo=epel -y install nrpe nagios-plugins wget
 #packstack --gen-answer-file packstack-answers-template.txt
 
 #for vlan mode
-packstack --answer-file packstack-answers-vlan.txt || exit 1;
+packstack --answer-file packstack-answers-vlan-havana.txt || exit 1;
 
 #for gre mode
 #packstack --answer-file packstack-answers-gre.txt
