@@ -8,7 +8,8 @@ done ;
 yum remove -y nrpe "*nagios*" puppet "*ntp*" "*openstack*" \
 "*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" \
 mysql mysql-server httpd "*memcache*" scsi-target-utils \
-iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release;
+iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release \
+qpid-cpp-server rabbitmq-server;
 
 ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
 
@@ -17,7 +18,7 @@ rm -rf /etc/nagios /etc/yum.repos.d/packstack_* /root/.my.cnf \
 /var/lib/mysql/ /var/lib/glance /var/lib/nova /etc/nova /etc/swift \
 /srv/node/device*/* /var/lib/cinder/ /etc/rsync.d/frag* \
 /var/cache/swift /var/log/keystone /var/log/cinder/ /var/log/nova/ \
-/var/log/httpd /var/log/glance/ /var/log/nagios/ /var/log/quantum/ ;
+/var/log/httpd /var/log/glance/ /var/log/nagios/ /var/log/neutron/ ;
 
 umount /srv/node/device* ;
 killall -9 dnsmasq tgtd httpd ;
