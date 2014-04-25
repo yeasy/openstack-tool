@@ -6,13 +6,15 @@ done ;
 
 # Remove installed packages
 yum remove -y nrpe "*nagios*" puppet "*ntp*" "*openstack*" "*horizon*" \
-"*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" "neutron" \
+"*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*" "*neutron*" \
 "ceilometer" "*mysql*" httpd "*memcache*" scsi-target-utils \
 iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release \
-"*qpid*" "*rabbitmq*" "*galera*" "*python-oslo*" "*python-six*" \
-"*python-croniter*" "*python-crypto*" "*python-flask*" "*networkx*" \
-"*oauthlib*" "*paramiko*" "*pecan*" "*pycadf*" "*singledispatch*" \
-"*taskflow*" "*troveclient*" "*python-wsme*";
+"*qpid*" "*rabbitmq*";
+
+#"*python-oslo*" "*python-six*" \
+#"*python-croniter*" "*python-crypto*" "*python-flask*" "*python-networkx*" \
+#"*python-oauthlib*" "*python-paramiko*" "*python-pecan*" "*python-pycadf*" "*singledispatch*" \
+#"*python-taskflow*" "*python-troveclient*" "*python-wsme*";
 
 ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
 
