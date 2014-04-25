@@ -13,7 +13,7 @@ iscsi-initiator-utils perl-DBI perl-DBD-MySQL rdo-release \
 
 #"*python-oslo*" "*python-six*" \
 #"*python-croniter*" "*python-crypto*" "*python-flask*" "*python-networkx*" \
-#"*python-oauthlib*" "*python-paramiko*" "*python-pecan*" "*python-pycadf*" "*singledispatch*" \
+#"*python-oauthlib*" "*python-paramiko*" "*python-pecan*" "*python-pycadf*" "*python-singledispatch*" \
 #"*python-taskflow*" "*python-troveclient*" "*python-wsme*";
 
 ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
