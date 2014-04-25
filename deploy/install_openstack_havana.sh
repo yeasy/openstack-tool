@@ -1,6 +1,8 @@
 #!/bin/sh
 
 echo "Recommend to run the ./clear_openstack.sh first, especially for alreay installed machines."
+echo "Checking other release..."
+[ `yum list installed |grep icehouse` ] && exit -1;
 
 #This will add the rdo-release, puppetlabs and foreman yum source
 yum install -y http://rdo.fedorapeople.org/openstack/openstack-havana/rdo-release-havana.rpm  
