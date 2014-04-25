@@ -21,17 +21,22 @@ ps -ef | grep -i repli | grep swift | awk '{print $2}' | xargs kill ;
 # Delete local application data
 echo "Cleaning configuration files..."
 rm -rf /etc/nagios /etc/yum.repos.d/packstack_* /root/.my.cnf \
-/etc/nova /etc/swift /etc/openstack-dashboard/ /etc/neutron/;
+/etc/nova /etc/swift /etc/openstack-dashboard/ /etc/neutron/ \
+/etc/httpd/;
 
 echo "Cleaning lib files..."
 rm -rf /var/lib/mysql/ /var/lib/glance /var/lib/nova  \
-/srv/node/device*/* /var/lib/cinder/ /var/lib/neutron/ \
+/srv/node/device*/* /var/lib/cinder/ /var/lib/neutron/ /var/lib/ceilometer \
 /var/lib/openstack-dashboard/ /etc/rsync.d/frag* /var/cache/swift;
 
 echo "Cleaning log files..."
 rm -rf /var/log/keystone /var/log/cinder/ /var/log/nova/ \
 /var/log/horizon/ /var/log/httpd /var/log/glance/ /var/log/nagios/ \
 /var/log/neutron/;
+
+rm -rf var/lock/subsys/neutron-* /var/run/neutron /var/run/horizon /var/run/cinder/
+
+rm -rf /root/.novaclient /usr/share/openstack-dashboard
 
 umount /srv/node/device* ;
 killall -9 dnsmasq tgtd httpd ;
