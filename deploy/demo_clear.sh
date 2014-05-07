@@ -1,5 +1,6 @@
 #!/bin/sh
 #Clear the vms, nets, routers, tenants, etc. created by demo_init.sh
+#In theory, the script is safe to be executed repeatedly.
 
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
@@ -29,22 +30,24 @@ nova secgroup-delete-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-delete-rule default tcp 22 22 0.0.0.0/0
 
 echo "Terminate the booted vms..."
-VM_ID=`nova list|grep ${VM_NAME}|awk '{print $2}'`
-nova delete ${VM_ID}
-sleep 3;
+if [ -n "`nova list|grep ${VM_NAME}`" ]; then
+    VM_ID=`nova list|grep ${VM_NAME}|awk '{print $2}'`
+    nova delete ${VM_ID}
+    sleep 3;
+fi
 
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=admin
 
 echo "Clear the image from glance and the flavor..."
-IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
-if [ -n ${IMAGE_ID} ]; then
+if [ -n "`nova image-list|grep ${IMAGE_NAME}`" ]; then
+    IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
     glance delete ${IMAGE_ID}
+    sleep 2;
 fi
-nova flavor-create ex.tiny
-nova flavor-create ex.small
-sleep 2;
+nova flavor-delete ex.tiny
+nova flavor-delete ex.small
 
 echo "Clear the router and its interfaces..."
 if [ -n "`neutron router-list|grep ${ROUTER_NAME}`" ]; then
