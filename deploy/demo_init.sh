@@ -1,18 +1,18 @@
 #!/bin/sh
 #Create a project and add a new user with net/subnet/vm image...
-#TODO: Delete the created content to restore a fresh environment.
 
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
 # Environment information
 CONTROL_IP=192.168.122.100
 COMPUTE_IP=192.168.122.101
-ADMIN_NAME=admin #the name of the default admin user
 #source keystonerc_admin
 export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=admin
+ADMIN_NAME=admin #the name of the default admin user
+ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
 
 # The tenant, user, net, etc... to be created
 TENANT_NAME="project_one"
@@ -39,40 +39,39 @@ VM_NAME="cirros"
 
 ## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
 
-#prepare the vm image
+echo "Check the vm image..."
 [ -f ${IMAGE_FILE} ] || wget ${IMAGE_URL}
 
-#create a new project
-keystone tenant-create --name ${TENANT_NAME} --description "${TENANT_DESC}"
+echo "Create a new tenant"
+[ -z "`keystone tenant-list|grep ${TENANT_NAME}`" ] && keystone tenant-create --name ${TENANT_NAME} --description "${TENANT_DESC}"
 TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
 
-#create a new user and add it into the project
-keystone user-create --name ${USER_NAME} --pass ${USER_PWD} --tenant-id ${TENANT_ID} --email ${USER_EMAIL}
+echo "Create a new user and add it into the tenant..."
+[ -z "`keystone user-list|grep ${USER_NAME}`" ] && keystone user-create --name ${USER_NAME} --pass ${USER_PWD} --tenant-id ${TENANT_ID} --email ${USER_EMAIL}
 USER_ID=`keystone user-list|grep ${USER_NAME}|awk '{print $2}'`
 ROLE_ID=`keystone role-list|grep ${USER_ROLE}|awk '{print $2}'`
 keystone user-role-add --tenant-id ${TENANT_ID}  --user-id ${USER_ID} --role-id ${ROLE_ID}
 
-#create a new internal net and subnet
-neutron net-create --tenant-id ${TENANT_ID} ${INT_NET_NAME}
+echo "Create an internal net and subnet..."
+[ -z "`neutron net-list|grep ${INT_NET_NAME}`" ] && neutron net-create --tenant-id ${TENANT_ID} ${INT_NET_NAME}
 INT_NET_ID=`neutron net-list|grep ${INT_NET_NAME}|awk '{print $2}'`
-neutron subnet-create --tenant-id ${TENANT_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --dns_nameservers list=true 8.8.8.7 8.8.8.8
-
-#create a router and add it to the subnet
-neutron router-create --tenant-id ${TENANT_ID} ${ROUTER_NAME}
+[ -z "`neutron subnet-list|grep ${INT_SUBNET_NAME}`" ] && neutron subnet-create --tenant-id ${TENANT_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --dns_nameservers list=true 8.8.8.7 8.8.8.8
 INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
-ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
-neutron router-interface-add ${ROUTER_ID} ${INT_SUBNET_ID}
 
-#create a new external net and subnet
-ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
-neutron net-create --tenant-id ${ADMIN_ID} ${EXT_NET_NAME} --router:external=True
-neutron subnet-create --tenant-id ${ADMIN_ID} --name ${EXT_SUBNET_NAME} --allocation-pool start=${FLOAT_IP_START},end=${FLOAT_IP_END} --gateway ${EXT_GATEWAY} ${EXT_NET_NAME} ${EXT_IP_CIDR} --enable_dhcp=False
-
-#add router's external gateway
+echo "Create an external net and subnet..."
+[ -z "`neutron net-list|grep ${EXT_NET_NAME}`" ] && neutron net-create --tenant-id ${ADMIN_ID} ${EXT_NET_NAME} --router:external=True
+[ -z "`neutron subnet-list|grep ${EXT_SUBNET_NAME}`" ] && neutron subnet-create --tenant-id ${ADMIN_ID} --name ${EXT_SUBNET_NAME} --allocation-pool start=${FLOAT_IP_START},end=${FLOAT_IP_END} --gateway ${EXT_GATEWAY} ${EXT_NET_NAME} ${EXT_IP_CIDR} --enable_dhcp=False
 EXT_NET_ID=`neutron net-list|grep ${EXT_NET_NAME}|awk '{print $2}'`
+
+echo "Create a router, add its interface to the internal subnet, and add the external gateway..."
+[ -z "`neutron router-list|grep ${ROUTER_NAME}`" ] && neutron router-create --tenant-id ${TENANT_ID} ${ROUTER_NAME}
+ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
+neutron router-interface-delete ${ROUTER_ID} ${INT_SUBNET_ID}
+neutron router-interface-add ${ROUTER_ID} ${INT_SUBNET_ID}
+neutron router-gateway-clear ${ROUTER_ID} ${EXT_NET_ID}
 neutron router-gateway-set ${ROUTER_ID} ${EXT_NET_ID}
 
-#upload a vm image
+echo "Add the image file into glance and create flavors..."
 if [ -f ${IMAGE_FILE} ]; then
     glance add disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true < ${IMAGE_FILE} 
     IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
@@ -91,16 +90,20 @@ nova flavor-create --is-public true ex.small 11 512 20 1
 export OS_TENANT_NAME=${TENANT_NAME}
 export OS_USERNAME=${USER_NAME}
 export OS_PASSWORD=${USER_PWD}
+
+echo "Add default secgroup rules of allowing ping and ssh..."
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
 
 #neutron floatingip-create ${EXT_NET_NAME}
 
+echo "Boot a vm in the internal net..."
 sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf
 ssh root@${COMPUTE_IP} "sed -i 's/#libvirt_inject_password=false/libvirt_inject_password=true/g' /etc/nova/nova.conf; /etc/init.d/openstack-nova-compute restart"
 sleep 1
 nova boot ${VM_NAME} --image ${IMAGE_ID} --flavor 10 --nic net-id=${INT_NET_ID}
 sleep 2;
 
+echo "Done"
 exit
 VM_PORT_ID=`neutron port-list|grep ${INT_SUBNET_ID}|awk '{print $2}'`
