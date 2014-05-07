@@ -18,12 +18,15 @@ The deployment is suggested to utilize [RDO](openstack.redhat.com).
 ##install_openstack.sh
 Install openstack based on RDO and the configuration template.
 
-##init_openstack.sh
+##demo_init.sh
 After the installation, init by adding a user and a project with net/subnet/vm.
 Recommend to download the [Cirros Image] (https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img) and put it under the directory. Otherwise the tool will automatically do it.
 
-##clear_openstack.sh  
-Clear the machine which has installed openstack.
+##demo_clean.sh
+Clean the added user, project, vm, net, subnet, etc. by the demo_init.sh.
+
+##purege_openstack.sh  
+Clear the machine which has openstack installed.
 
 ##packstack-answers-gre
 RDO configuration template for multinode, GRE based.
