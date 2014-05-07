@@ -1,3 +1,10 @@
+
+
+echo "The script will remove all openstack related softwares, packages and configurations in your machine" 
+read -p "Are you sure to do that? Y/n" choice
+
+[ $choice != "Y" ] && exit 0;
+
 # Destroy VMs
 for x in $(virsh list --all | grep instance- | awk '{print $2}') ; do
     virsh destroy $x ;
