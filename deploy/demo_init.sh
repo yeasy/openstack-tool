@@ -20,13 +20,15 @@ TENANT_DESC="The first project"
 USER_NAME="user"
 USER_PWD="user"
 USER_EMAIL="user@domain.com"
-USER_ROLE="Member"
+USER_ROLE="_member_"
+USER_ROLE2="Member"
 INT_NET_NAME="net_int"
 INT_SUBNET_NAME="subnet_int"
 EXT_NET_NAME="net_ext"
 EXT_SUBNET_NAME="subnet_ext"
 ROUTER_NAME="router"
 INT_IP_CIDR="192.168.0.0/24"
+INT_GATEWAY="192.168.0.1"
 FLOAT_IP_START="192.168.122.200"
 FLOAT_IP_END="192.168.122.254"
 EXT_GATEWAY="192.168.122.1"
@@ -49,13 +51,20 @@ TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
 echo "Create a new user and add it into the tenant..."
 [ -z "`keystone user-list|grep ${USER_NAME}`" ] && keystone user-create --name ${USER_NAME} --pass ${USER_PWD} --tenant-id ${TENANT_ID} --email ${USER_EMAIL}
 USER_ID=`keystone user-list|grep ${USER_NAME}|awk '{print $2}'`
-ROLE_ID=`keystone role-list|grep ${USER_ROLE}|awk '{print $2}'`
-keystone user-role-add --tenant-id ${TENANT_ID}  --user-id ${USER_ID} --role-id ${ROLE_ID}
+if [ -n "`keystone role-list|grep ${USER_ROLE}`" ]; then
+    ROLE_ID=`keystone role-list|grep ${USER_ROLE}|awk '{print $2}'`
+elif [ -n "`keystone role-list|grep ${USER_ROLE2}`" ]; then
+    ROLE_ID=`keystone role-list|grep ${USER_ROLE2}|awk '{print $2}'`
+else
+    echo "No role is found"
+    exit -1;
+fi
+[ -z "`keystone user-role-list --tenant-id ${TENANT_ID} --user-id ${USER_ID}|grep ${ROLE_ID}`" ] && keystone user-role-add --tenant-id ${TENANT_ID} --user-id ${USER_ID} --role-id ${ROLE_ID}
 
 echo "Create an internal net and subnet..."
 [ -z "`neutron net-list|grep ${INT_NET_NAME}`" ] && neutron net-create --tenant-id ${TENANT_ID} ${INT_NET_NAME}
 INT_NET_ID=`neutron net-list|grep ${INT_NET_NAME}|awk '{print $2}'`
-[ -z "`neutron subnet-list|grep ${INT_SUBNET_NAME}`" ] && neutron subnet-create --tenant-id ${TENANT_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --dns_nameservers list=true 8.8.8.7 8.8.8.8
+[ -z "`neutron subnet-list|grep ${INT_SUBNET_NAME}`" ] && neutron subnet-create --tenant-id ${TENANT_ID} --name ${INT_SUBNET_NAME} ${INT_NET_NAME} ${INT_IP_CIDR} --gateway ${INT_GATEWAY} --dns_nameservers list=true 8.8.8.7 8.8.8.8
 INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
 
 echo "Create an external net and subnet..."
@@ -66,9 +75,9 @@ EXT_NET_ID=`neutron net-list|grep ${EXT_NET_NAME}|awk '{print $2}'`
 echo "Create a router, add its interface to the internal subnet, and add the external gateway..."
 [ -z "`neutron router-list|grep ${ROUTER_NAME}`" ] && neutron router-create --tenant-id ${TENANT_ID} ${ROUTER_NAME}
 ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
-neutron router-interface-delete ${ROUTER_ID} ${INT_SUBNET_ID}
+#neutron router-interface-delete ${ROUTER_ID} ${INT_SUBNET_ID}
 neutron router-interface-add ${ROUTER_ID} ${INT_SUBNET_ID}
-neutron router-gateway-clear ${ROUTER_ID} ${EXT_NET_ID}
+#neutron router-gateway-clear ${ROUTER_ID} ${EXT_NET_ID}
 neutron router-gateway-set ${ROUTER_ID} ${EXT_NET_ID}
 
 echo "Add the image file into glance and create flavors..."
