@@ -46,8 +46,8 @@ if [ -n "`nova image-list|grep ${IMAGE_NAME}`" ]; then
     glance delete ${IMAGE_ID}
     sleep 2;
 fi
-nova flavor-delete ex.tiny
-nova flavor-delete ex.small
+[ -n "`nova flavor-list|grep ex.tiny`" ] && nova flavor-delete ex.tiny
+[ -n "`nova flavor-list|grep ex.small`" ] && nova flavor-delete ex.small
 
 echo "Clear the router and its interfaces..."
 if [ -n "`neutron router-list|grep ${ROUTER_NAME}`" ]; then
