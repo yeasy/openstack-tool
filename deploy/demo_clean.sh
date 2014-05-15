@@ -52,9 +52,10 @@ fi
 echo "Clear the router and its interfaces..."
 if [ -n "`neutron router-list|grep ${ROUTER_NAME}`" ]; then
     ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
+    INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
     #clear router's external gateway at the external net
-    [ -n ${EXT_NET_ID} ] && neutron router-gateway-clear ${ROUTER_ID} ${EXT_NET_ID}
-    [ -n ${INT_SUBNET_ID} ] && neutron router-interface-delete ${ROUTER_ID} ${INT_SUBNET_ID}
+    [ -n "${EXT_NET_ID}" ] && neutron router-gateway-clear ${ROUTER_ID} ${EXT_NET_ID}
+    [ -n "${INT_SUBNET_ID}" ] && neutron router-interface-delete ${ROUTER_ID} ${INT_SUBNET_ID}
     neutron router-delete ${ROUTER_ID}
 fi
 
