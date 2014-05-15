@@ -22,13 +22,13 @@ VM_NAME="cirros"
 
 ## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
 
-echo "Remove security rules..."
+echo "Remove security rules and security group..."
 export OS_TENANT_NAME=${TENANT_NAME}
 export OS_USERNAME=${USER_NAME}
 export OS_PASSWORD=${USER_PWD}
 nova secgroup-delete-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-delete-rule default tcp 22 22 0.0.0.0/0
-nova secgroup-delete default
+#nova secgroup-delete default
 
 echo "Terminate the booted vms..."
 if [ -n "`nova list|grep ${VM_NAME}`" ]; then
