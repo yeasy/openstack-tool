@@ -28,6 +28,7 @@ export OS_USERNAME=${USER_NAME}
 export OS_PASSWORD=${USER_PWD}
 nova secgroup-delete-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-delete-rule default tcp 22 22 0.0.0.0/0
+nova secgroup-delete default
 
 echo "Terminate the booted vms..."
 if [ -n "`nova list|grep ${VM_NAME}`" ]; then
