@@ -1,5 +1,7 @@
 #!/bin/sh
-#Create a project and add a new user with net/subnet/vm image...
+#Create a project and add a new user with net/subnet/vm/image...
+#In the new created vm, you can try ping Internet.
+#TODO: May assign a floating ip to the vm image.
 
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
