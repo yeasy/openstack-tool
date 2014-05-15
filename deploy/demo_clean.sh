@@ -44,7 +44,7 @@ export OS_PASSWORD=admin
 echo "Clear the image from glance and the flavor..."
 if [ -n "`nova image-list|grep ${IMAGE_NAME}`" ]; then
     IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
-    glance delete ${IMAGE_ID}
+    glance -f image-delete ${IMAGE_ID}
     sleep 2;
 fi
 [ -n "`nova flavor-list|grep ex.tiny`" ] && nova flavor-delete ex.tiny
