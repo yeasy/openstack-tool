@@ -84,7 +84,7 @@ neutron router-gateway-set ${ROUTER_ID} ${EXT_NET_ID}
 
 echo "Add the image file into glance and create flavors..."
 if [ -f ${IMAGE_FILE} ]; then
-    glance add disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true < ${IMAGE_FILE} 
+    glance image-create disk_format=qcow2 container_format=ovf name=${IMAGE_NAME} is_public=true --file ${IMAGE_FILE} --progress
     IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
 fi
 nova flavor-create --is-public true ex.tiny 10 512 2 1
