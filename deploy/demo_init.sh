@@ -13,7 +13,7 @@ export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=admin
-ADMIN_NAME=admin #the name of the default admin user
+ADMIN_NAME=admin
 ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
 
 # The tenant, user, net, etc... to be created
