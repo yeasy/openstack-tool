@@ -43,14 +43,14 @@ VM_NAME="cirros"
 
 ## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
 
-echo "Check the vm image..."
+echo "Check the demo image..."
 [ -f ${IMAGE_FILE} ] || wget ${IMAGE_URL}
 
-echo "Create a new tenant"
+echo "Create a demo tenant"
 [ -z "`keystone tenant-list|grep ${TENANT_NAME}`" ] && keystone tenant-create --name ${TENANT_NAME} --description "${TENANT_DESC}"
 TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
 
-echo "Create a new user and add it into the tenant..."
+echo "Create a demo user and add it into the demo tenant..."
 [ -z "`keystone user-list|grep ${USER_NAME}`" ] && keystone user-create --name ${USER_NAME} --pass ${USER_PWD} --tenant-id ${TENANT_ID} --email ${USER_EMAIL}
 USER_ID=`keystone user-list|grep ${USER_NAME}|awk '{print $2}'`
 if [ -n "`keystone role-list|grep ${USER_ROLE}`" ]; then

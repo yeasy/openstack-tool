@@ -30,7 +30,7 @@ nova secgroup-delete-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-delete-rule default tcp 22 22 0.0.0.0/0
 #nova secgroup-delete default
 
-echo "Terminate the booted vms..."
+echo "Terminate the demo vm..."
 if [ -n "`nova list|grep ${VM_NAME}`" ]; then
     VM_ID=`nova list|grep ${VM_NAME}|awk '{print $2}'`
     nova delete ${VM_ID}
@@ -41,7 +41,7 @@ export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=admin
 
-echo "Clear the image from glance and the flavor..."
+echo "Clear the demo image from glance and the flavor..."
 if [ -n "`nova image-list|grep ${IMAGE_NAME}`" ]; then
     IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
     glance -f image-delete ${IMAGE_ID}
@@ -50,7 +50,7 @@ fi
 [ -n "`nova flavor-list|grep ex.tiny`" ] && nova flavor-delete ex.tiny
 [ -n "`nova flavor-list|grep ex.small`" ] && nova flavor-delete ex.small
 
-echo "Clear the router and its interfaces..."
+echo "Clear the demo router and its interfaces..."
 if [ -n "`neutron router-list|grep ${ROUTER_NAME}`" ]; then
     ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
     INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
@@ -60,7 +60,7 @@ if [ -n "`neutron router-list|grep ${ROUTER_NAME}`" ]; then
     neutron router-delete ${ROUTER_ID}
 fi
 
-echo "Clear the external subnet and net..."
+echo "Clear the demo external subnet and net..."
 if [ -n "`neutron subnet-list|grep ${EXT_SUBNET_NAME}`" ]; then 
     EXT_SUBNET_ID=`neutron subnet-list|grep ${EXT_SUBNET_NAME}|awk '{print $2}'`
     neutron subnet-delete ${EXT_SUBNET_ID}
@@ -70,7 +70,7 @@ if [ -n "`neutron net-list|grep ${EXT_NET_NAME}`" ]; then
     neutron net-delete ${EXT_NET_ID}
 fi
 
-echo "Clear the internal subnet and net..."
+echo "Clear the demo internal subnet and net..."
 if [ -n "`neutron subnet-list|grep ${INT_SUBNET_NAME}`" ]; then 
     INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
     neutron subnet-delete ${INT_SUBNET_ID}
@@ -80,13 +80,13 @@ if [ -n "`neutron net-list|grep ${INT_NET_NAME}`" ]; then
     neutron net-delete ${INT_NET_ID}
 fi
 
-echo "Clear the added user..."
+echo "Clear the demo user..."
 if [ -n "`keystone user-list|grep ${USER_NAME}`" ]; then 
     USER_ID=`keystone user-list|grep ${USER_NAME}|awk '{print $2}'`
     keystone user-delete ${USER_ID}
 fi
 
-echo "Clear the created project..."
+echo "Clear the demo project..."
 if [ -n "`keystone tenant-list|grep ${TENANT_NAME}`" ]; then 
     TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
     keystone tenant-delete ${TENANT_ID}
