@@ -9,9 +9,9 @@ RELEASE=$1
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
 # Environment information
-__pub_net__="192.168.122"
-CONTROL_IP="$__pub_net__.100"
-COMPUTE_IP="$__pub_net__.101"
+__pub_net__="9.186.105"
+CONTROL_IP="$__pub_net__.110"
+COMPUTE_IP="$__pub_net__.49"
 #export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
 #export OS_TENANT_NAME=admin
 #export OS_USERNAME=admin
@@ -114,6 +114,8 @@ export OS_PASSWORD=${USER_PWD}
 echo "Add default secgroup rules of allowing ping and ssh..."
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
+nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
+nova secgroup-add-rule default tcp 443 443 0.0.0.0/0
 
 #neutron floatingip-create ${EXT_NET_NAME}
 

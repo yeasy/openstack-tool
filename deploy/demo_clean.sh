@@ -29,6 +29,8 @@ export OS_USERNAME=${USER_NAME}
 export OS_PASSWORD=${USER_PWD}
 nova secgroup-delete-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-delete-rule default tcp 22 22 0.0.0.0/0
+nova secgroup-delete-rule default tcp 80 80 0.0.0.0/0
+nova secgroup-delete-rule default tcp 443 443 0.0.0.0/0
 #nova secgroup-delete default
 
 echo "Terminate the demo vm..."
