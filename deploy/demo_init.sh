@@ -3,12 +3,15 @@
 #In the new created vm, you can try ping Internet.
 #TODO: May assign a floating ip to the vm image.
 
+[ $# -ne 1 ] && echo "Please give the openstack release name" && exit -1;
+RELEASE=$1
+
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
 # Environment information
 CONTROL_IP=192.168.122.100
 COMPUTE_IP=192.168.122.101
-source icehouse/keystonerc_admin
+source $RELEASE/keystonerc_admin
 #export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
 #export OS_TENANT_NAME=admin
 #export OS_USERNAME=admin
