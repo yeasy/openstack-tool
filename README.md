@@ -7,35 +7,41 @@ The `deploy` directory contains tools for the deployment, while the `devop` one 
 
 #Deploy
 
-The deployment is suggested to utilize [RDO](openstack.redhat.com).
+The deployment is based on [RDO](openstack.redhat.com).
 
 ##Server configuration
 * Managment   Network: `192.168.122.0/24`
 * Data        Network: `10.0.0.0/24`
-* Control Server: `10.0.0.100 (eth0)`, `192.168.122.100 (eth1)`
-* Compute Server: `10.0.0.101 (eth0)`, `192.168.122.101 (eth1)`
+* Control Node: `10.0.0.100 (eth0)`, `192.168.122.100 (eth1)`
+* Compute Node: `10.0.0.101 (eth0)`, `192.168.122.101 (eth1)`
 
-##install_openstack.sh
+##rdo_install.sh
 Install openstack based on RDO and the configuration template.
+
+##rdo_purge.sh
+Clear the machine which has openstack installed.
 
 ##demo_init.sh
 After the installation, init by adding a user and a project with net/subnet/vm.
-Recommend to download the [Cirros Image] (https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img) and put it under the directory. Otherwise the tool will automatically do it.
+Recommend to download the [Cirros Image] (https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img) and put it under the deploy directory.
+Otherwise the tool will automatically do it.
 
 ##demo_clean.sh
 Clean the added user, project, vm, net, subnet, etc. by the demo_init.sh.
 
-##purege_openstack.sh  
-Clear the machine which has openstack installed.
-
-##packstack-answers-gre
+##havana
+Some configuration files for the havana release.
+###packstack-answers-gre
 RDO configuration template for multinode, GRE based.
 
-##packstack-answers-vlan
+###packstack-answers-vlan
 RDO configuration template for multinode, Vlan based.
 
-##keystonerc_admin
+###keystonerc_admin
 A reference keystonrc of the admin role.
+
+##icehouse
+Some configuration files for the icehouse release.
 
 #Devop
 
@@ -50,7 +56,7 @@ Enable colorful bash if supported. Please rename this to `.bash_color`, and put 
 
 ##ovs_mon
 This script can monitor multiple OpenvSwitch rules by filtering useful ones and reformat them. It even support colorful output!
-Just put it in your local PATH such as /usr/local/bin/.
+Just put it in your local PATH such as /usr/local/bin/. A more powerful tool is [easyOVS] (https://github.com/yeasy/easyOVS).
 
 The original way to observe the rules in a switch (e.g., s1) is using ovs-ofctl, while it's hard to explore when there're lots of rules
 ```
