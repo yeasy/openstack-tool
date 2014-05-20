@@ -6,7 +6,8 @@
 
 # Environment information
 CONTROL_IP=192.168.122.100
-export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
+source icehouse/keystonerc_admin
+#export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
 
 # The tenant, user, net, etc... to be created
 TENANT_NAME="project_one"

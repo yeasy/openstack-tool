@@ -8,11 +8,11 @@
 # Environment information
 CONTROL_IP=192.168.122.100
 COMPUTE_IP=192.168.122.101
-#source keystonerc_admin
-export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
-export OS_TENANT_NAME=admin
-export OS_USERNAME=admin
-export OS_PASSWORD=admin
+source icehouse/keystonerc_admin
+#export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
+#export OS_TENANT_NAME=admin
+#export OS_USERNAME=admin
+#export OS_PASSWORD=admin
 ADMIN_NAME=admin
 ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
 
