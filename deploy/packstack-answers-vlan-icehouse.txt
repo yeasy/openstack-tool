@@ -67,6 +67,18 @@ CONFIG_DEBUG_MODE=n
 # storageOtherwise set to 'n'.
 CONFIG_VMWARE_BACKEND=n
 
+# The IP address of the VMware vCenter server
+CONFIG_VCENTER_HOST=
+
+# The username to authenticate to VMware vCenter server
+CONFIG_VCENTER_USER=
+
+# The password to authenticate to VMware vCenter server
+CONFIG_VCENTER_PASSWORD=
+
+# The name of the vCenter cluster
+CONFIG_VCENTER_CLUSTER_NAME=
+
 # The IP address of the server on which to install MySQL
 CONFIG_MYSQL_HOST=192.168.122.100
 
@@ -168,15 +180,6 @@ CONFIG_CINDER_GLUSTER_MOUNTS=
 # address:/export-name
 CONFIG_CINDER_NFS_MOUNTS=
 
-# The IP address of the VMware vCenter datastore
-CONFIG_VCENTER_HOST=
-
-# The username to authenticate to VMware vCenter datastore
-CONFIG_VCENTER_USER=
-
-# The password to authenticate to VMware vCenter datastore
-CONFIG_VCENTER_PASSWORD=
-
 # The IP address of the server on which to install the Nova API
 # service
 CONFIG_NOVA_API_HOST=192.168.122.100
@@ -251,18 +254,6 @@ CONFIG_NOVA_NETWORK_NUMBER=1
 
 # Number of addresses in each private subnet
 CONFIG_NOVA_NETWORK_SIZE=255
-
-# The IP address of the VMware vCenter server
-CONFIG_VCENTER_HOST=
-
-# The username to authenticate to VMware vCenter server
-CONFIG_VCENTER_USER=
-
-# The password to authenticate to VMware vCenter server
-CONFIG_VCENTER_PASSWORD=
-
-# The name of the vCenter cluster
-CONFIG_VCENTER_CLUSTER_NAME=
 
 # The IP addresses of the server on which to install the Neutron
 # server
