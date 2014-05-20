@@ -9,13 +9,14 @@ RELEASE=$1
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
 # Environment information
-CONTROL_IP=192.168.122.100
-COMPUTE_IP=192.168.122.101
-source $RELEASE/keystonerc_admin
+__pub_net__="192.168.122"
+CONTROL_IP="$__pub_net__.100"
+COMPUTE_IP="$__pub_net__.101"
 #export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
 #export OS_TENANT_NAME=admin
 #export OS_USERNAME=admin
 #export OS_PASSWORD=admin
+source $RELEASE/keystonerc_admin
 ADMIN_NAME=admin
 ADMIN_ID=`keystone tenant-list|grep ${ADMIN_NAME}|awk '{print $2}'`
 
@@ -27,17 +28,22 @@ USER_PWD="user"
 USER_EMAIL="user@domain.com"
 USER_ROLE="_member_"
 USER_ROLE2="Member"
+
 INT_NET_NAME="net_int"
 INT_SUBNET_NAME="subnet_int"
-EXT_NET_NAME="net_ext"
-EXT_SUBNET_NAME="subnet_ext"
-ROUTER_NAME="router"
 INT_IP_CIDR="192.168.0.0/24"
 INT_GATEWAY="192.168.0.1"
-FLOAT_IP_START="192.168.122.200"
-FLOAT_IP_END="192.168.122.254"
-EXT_GATEWAY="192.168.122.1"
-EXT_IP_CIDR="192.168.122.0/24"
+
+EXT_NET_NAME="net_ext"
+EXT_SUBNET_NAME="subnet_ext"
+
+FLOAT_IP_START="$__pub_net__.200"
+FLOAT_IP_END="$__pub_net__.254"
+EXT_GATEWAY="$__pub_net__.1"
+EXT_IP_CIDR="$__pub_net__.0/24"
+
+ROUTER_NAME="router"
+
 IMAGE_NAME="cirros-0.3.0-x86_64"
 IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
 IMAGE_URL=https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
