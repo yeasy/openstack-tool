@@ -95,4 +95,10 @@ if [ -n "`keystone tenant-list|grep ${TENANT_NAME}`" ]; then
     keystone tenant-delete ${TENANT_ID}
 fi
 
+echo "Clean all generated network namespace"
+for name in `ip netns show`  
+do   
+    [[ $name == qdhcp-* || $name == qrouter-* ]] &&  ip netns del $name
+done
+
 echo "Done"
