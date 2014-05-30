@@ -2,103 +2,64 @@
 #Clear the vms, nets, routers, tenants, etc. created by demo_init.sh
 #In theory, the script is safe to be executed repeatedly.
 
-## THOSE VARIABLES CAN BE CUSTOMIZED. ##
+[ ! -e header.sh ] && echo_r "Not found header file" && exit -1
+. ./header.sh
 
-# Environment information
-CONTROL_IP=192.168.122.100
-source icehouse/keystonerc_admin
-#export OS_AUTH_URL=http://${CONTROL_IP}:35357/v2.0/
+## MAIN PROCESSING START ##
 
-# The tenant, user, net, etc... to be created
-TENANT_NAME="project_one"
-USER_NAME="user"
-USER_PWD="user"
-INT_NET_NAME="net_int"
-INT_SUBNET_NAME="subnet_int"
-EXT_NET_NAME="net_ext"
-EXT_SUBNET_NAME="subnet_ext"
-ROUTER_NAME="router"
-IMAGE_NAME="cirros-0.3.0-x86_64"
-VM_NAME="cirros"
-
-## DO NOT MODIFY THE FOLLOWING PART, UNLESS YOU KNOW WHAT IT MEANS. ##
-
-echo "Remove security rules and security group..."
 export OS_TENANT_NAME=${TENANT_NAME}
 export OS_USERNAME=${USER_NAME}
 export OS_PASSWORD=${USER_PWD}
+
+echo_b "Remove security rules and security group..."
 nova secgroup-delete-rule default icmp -1 -1 0.0.0.0/0
 nova secgroup-delete-rule default tcp 22 22 0.0.0.0/0
 nova secgroup-delete-rule default tcp 80 80 0.0.0.0/0
 nova secgroup-delete-rule default tcp 443 443 0.0.0.0/0
 #nova secgroup-delete default
 
-echo "Terminate the demo vm..."
-if [ -n "`nova list|grep ${VM_NAME}`" ]; then
-    VM_ID=`nova list|grep ${VM_NAME}|awk '{print $2}'`
-    nova delete ${VM_ID}
-    sleep 3;
-fi
+echo_b "Terminate the demo vm..."
+delete_vm ${VM_NAME}
 
-export OS_TENANT_NAME=admin
-export OS_USERNAME=admin
-export OS_PASSWORD=admin
+source ${RELEASE}/keystonerc_admin
 
-echo "Clear the demo image from glance and the flavor..."
-if [ -n "`nova image-list|grep ${IMAGE_NAME}`" ]; then
-    IMAGE_ID=`nova image-list|grep ${IMAGE_NAME}|awk '{print $2}'`
-    glance -f image-delete ${IMAGE_ID}
-    sleep 2;
-fi
+echo_b "Clear the demo image from glance and the flavor..."
+delete_image ${IMAGE_NAME}
 [ -n "`nova flavor-list|grep ex.tiny`" ] && nova flavor-delete ex.tiny
 [ -n "`nova flavor-list|grep ex.small`" ] && nova flavor-delete ex.small
 
-echo "Clear the demo router and its interfaces..."
-if [ -n "`neutron router-list|grep ${ROUTER_NAME}`" ]; then
-    ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
-    INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
-    #clear router's external gateway at the external net
-    [ -n "${EXT_NET_ID}" ] && neutron router-gateway-clear ${ROUTER_ID} ${EXT_NET_ID}
-    [ -n "${INT_SUBNET_ID}" ] && neutron router-interface-delete ${ROUTER_ID} ${INT_SUBNET_ID}
+echo_b "Clear the demo router and its interfaces..."
+ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
+SUBNET_INT_ID=$(get_subnetid_by_name ${SUBNET_INT_NAME})
+SUBNET_EXT_ID=$(get_subnetid_by_name ${SUBNET_EXT_NAME})
+if [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" -a -n "${SUBNET_EXT_ID}" ]; then 
+    echo_g "Clearing its gateway from the ${SUBNET_EXT_NAME}..."
+    [ -n "${NET_EXT_ID}" ] && neutron router-gateway-clear ${ROUTER_ID} ${NET_EXT_ID}
+    echo_g "Deleting its interface from the ${SUBNET_INT_NAME}..."
+    neutron router-interface-delete ${ROUTER_ID} ${SUBNET_INT_ID}
     neutron router-delete ${ROUTER_ID}
 fi
 
-echo "Clear the demo external subnet and net..."
-if [ -n "`neutron subnet-list|grep ${EXT_SUBNET_NAME}`" ]; then 
-    EXT_SUBNET_ID=`neutron subnet-list|grep ${EXT_SUBNET_NAME}|awk '{print $2}'`
-    neutron subnet-delete ${EXT_SUBNET_ID}
-fi
-if [ -n "`neutron net-list|grep ${EXT_NET_NAME}`" ]; then
-    EXT_NET_ID=`neutron net-list|grep ${EXT_NET_NAME}|awk '{print $2}'`
-    neutron net-delete ${EXT_NET_ID}
-fi
+echo_b "Clear the demo external subnet and net..."
+delete_net_subnet ${NET_EXT_NAME} ${SUBNET_EXT_NAME}
 
-echo "Clear the demo internal subnet and net..."
-if [ -n "`neutron subnet-list|grep ${INT_SUBNET_NAME}`" ]; then 
-    INT_SUBNET_ID=`neutron subnet-list|grep ${INT_SUBNET_NAME}|awk '{print $2}'`
-    neutron subnet-delete ${INT_SUBNET_ID}
-fi
-if [ -n "`neutron net-list|grep ${INT_NET_NAME}`" ]; then 
-    INT_NET_ID=`neutron net-list|grep ${INT_NET_NAME}|awk '{print $2}'`
-    neutron net-delete ${INT_NET_ID}
-fi
+echo_b "Clear the demo internal subnet and net..."
+delete_net_subnet ${NET_INT_NAME} ${SUBNET_INT_NAME}
 
-echo "Clear the demo user..."
-if [ -n "`keystone user-list|grep ${USER_NAME}`" ]; then 
-    USER_ID=`keystone user-list|grep ${USER_NAME}|awk '{print $2}'`
-    keystone user-delete ${USER_ID}
-fi
+echo_b "Clear the demo user..."
+delete_user ${USER_NAME}
 
-echo "Clear the demo project..."
-if [ -n "`keystone tenant-list|grep ${TENANT_NAME}`" ]; then 
-    TENANT_ID=`keystone tenant-list|grep ${TENANT_NAME}|awk '{print $2}'`
-    keystone tenant-delete ${TENANT_ID}
-fi
+echo_b "Clear the demo project..."
+delete_tenant ${TENANT_NAME}
 
-echo "Clean all generated network namespace"
+echo_b "Clean all generated network namespace"
 for name in `ip netns show`  
 do   
     [[ $name == qdhcp-* || $name == qrouter-* ]] &&  ip netns del $name
 done
 
-echo "Done"
+unset OS_TENANT_NAME
+unset OS_USERNAME
+unset OS_PASSWORD
+unset OS_AUTH_URL
+echo_g "<<<Done" && exit 0
