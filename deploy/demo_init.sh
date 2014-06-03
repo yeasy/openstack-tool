@@ -11,8 +11,9 @@
 echo_b "Check the demo image..."
 [ -f ${IMAGE_FILE} ] || wget ${IMAGE_URL}
 
-echo_b "Create a demo tenant"
-TENANT_ID=$(create_tenant "$TENANT_NAME" "$TENANT_DESC") && echo_g "tenant id = ${TENANT_ID}"
+echo_b "Create a demo tenant ${TENANT_NAME}"
+create_tenant "$TENANT_NAME" "$TENANT_DESC" && sleep 1
+TENANT_ID=$(get_tenantid_by_name "$TENANT_NAME") && echo_g "tenant id = ${TENANT_ID}"
 
 echo_b "Create a demo user and add it into the demo tenant..."
 create_user "${USER_NAME}" "${USER_PWD}" "${TENANT_ID}" "${USER_EMAIL}"
@@ -28,7 +29,8 @@ echo_b "Create an external net and subnet..."
 NET_EXT_ID=$(get_subnetid_by_name ${SUBNET_EXT_NAME})
 
 echo_b "Create a router, add its interface to the internal subnet, and add the external gateway..."
-ROUTER_ID=$(create_router "${ROUTER_NAME}" "${TENANT_ID}")
+create_router "${ROUTER_NAME}" "${TENANT_ID}"
+ROUTER_ID=$(get_routerid_by_name "${ROUTER_NAME}")
 SUBNET_INT_ID=$(get_subnetid_by_name "$SUBNET_INT_NAME")
 SUBNET_EXT_ID=$(get_subnetid_by_name "$SUBNET_EXT_NAME")
 if [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" -a -n "${SUBNET_EXT_ID}" ]; then 
