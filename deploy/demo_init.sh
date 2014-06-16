@@ -26,16 +26,16 @@ SUBNET_INT_ID=$(get_subnetid_by_name "${SUBNET_INT_NAME}")
 echo_b "Create an external net and subnet..."
 [ -z "`neutron net-list|grep ${NET_EXT_NAME}`" ] && neutron net-create --tenant-id ${ADMIN_ID} ${NET_EXT_NAME} --router:external=True
 [ -z "`neutron subnet-list|grep ${SUBNET_EXT_NAME}`" ] && neutron subnet-create --tenant-id ${ADMIN_ID} --name ${SUBNET_EXT_NAME} --allocation-pool start=${FLOAT_IP_START},end=${FLOAT_IP_END} --gateway ${EXT_GATEWAY} ${NET_EXT_NAME} ${EXT_IP_CIDR} --enable_dhcp=False
-NET_EXT_ID=$(get_subnetid_by_name ${SUBNET_EXT_NAME})
+NET_EXT_ID=$(get_netid_by_name ${NET_EXT_NAME})
 
 echo_b "Create a router, add its interface to the internal subnet, and add the external gateway..."
 create_router "${ROUTER_NAME}" "${TENANT_ID}"
 ROUTER_ID=$(get_routerid_by_name "${ROUTER_NAME}")
 SUBNET_INT_ID=$(get_subnetid_by_name "$SUBNET_INT_NAME")
 SUBNET_EXT_ID=$(get_subnetid_by_name "$SUBNET_EXT_NAME")
-if [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" -a -n "${SUBNET_EXT_ID}" ]; then 
+if [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" -a -n "${NET_EXT_ID}" ]; then 
     [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" ] && neutron router-interface-add ${ROUTER_ID} ${SUBNET_INT_ID}
-    [ -n "${ROUTER_ID}" -a -n "${SUBNET_EXT_ID}" ] && neutron router-gateway-set ${ROUTER_ID} ${NET_EXT_ID}
+    [ -n "${ROUTER_ID}" -a -n "${NET_EXT_ID}" ] && neutron router-gateway-set ${ROUTER_ID} ${NET_EXT_ID}
 fi
 
 echo_b "Add the image file into glance and create flavors..."

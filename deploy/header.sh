@@ -3,8 +3,9 @@
 #In the new created vm, you can try ping Internet.
 #TODO: May assign a floating ip to the vm image.
 
-[ $# -ne 1 ] && echo "Please give the openstack release name" && exit -1;
-RELEASE=$1
+RELEASE="icehouse"
+
+[ $# -eq 1 ] && RELEASE=$1
 
 ## THOSE VARIABLES CAN BE CUSTOMIZED. ##
 
@@ -43,7 +44,6 @@ ROUTER_NAME="router"
 IMAGE_NAME="cirros-0.3.0-x86_64"
 IMAGE_FILE=cirros-0.3.0-x86_64-disk.img
 IMAGE_URL=https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
-#if not existed will download from ${IMAGE_URL}
 VM_NAME="demo_cirros"
 
 

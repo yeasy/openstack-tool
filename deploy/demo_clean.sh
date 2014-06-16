@@ -24,15 +24,15 @@ delete_vm ${VM_NAME}
 source ${RELEASE}/keystonerc_admin
 
 echo_b "Clear the demo image from glance and the flavor..."
-delete_image ${IMAGE_NAME}
+#delete_image ${IMAGE_NAME}
 [ -n "`nova flavor-list|grep ex.tiny`" ] && nova flavor-delete ex.tiny
 [ -n "`nova flavor-list|grep ex.small`" ] && nova flavor-delete ex.small
 
 echo_b "Clear the demo router and its interfaces..."
 ROUTER_ID=`neutron router-list|grep ${ROUTER_NAME}|awk '{print $2}'`
 SUBNET_INT_ID=$(get_subnetid_by_name ${SUBNET_INT_NAME})
-SUBNET_EXT_ID=$(get_subnetid_by_name ${SUBNET_EXT_NAME})
-if [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" -a -n "${SUBNET_EXT_ID}" ]; then 
+NET_EXT_ID=$(get_netid_by_name ${NET_EXT_NAME})
+if [ -n "${ROUTER_ID}" -a -n "${SUBNET_INT_ID}" -a -n "${NET_EXT_ID}" ]; then 
     echo_g "Clearing its gateway from the ${SUBNET_EXT_NAME}..."
     [ -n "${NET_EXT_ID}" ] && neutron router-gateway-clear ${ROUTER_ID} ${NET_EXT_ID}
     echo_g "Deleting its interface from the ${SUBNET_INT_NAME}..."
