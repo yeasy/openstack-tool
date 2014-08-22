@@ -91,3 +91,12 @@ $ ovsm s1 s2 s3
 
 ##ovs_delflow
 This tool support specifically del a flow from ovs. The flow can be given with priority and actions, e.g., `priority=100,ip actions=OUTPUT:1`, or `priority=100 ip,nw_proto=2 actions=OUTPUT:2`.
+
+##nss
+This script will show all ip address inside each network namespace created inside openstack node.
+If give a parameter, then it will show the network namespace containing the key.
+```
+$ nss 10.0.3.3
+qdhcp-40a3b06e-1564-46d1-9429-fc73d9186c8e
+99: tapa864b81a-50: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN link/ether fa:16:3e:5b:bf:0d brd ff:ff:ff:ff:ff:ff inet 10.0.3.3/24 brd 10.0.3.255 scope global tapa864b81a-50 inet6 fe80::f816:3eff:fe5b:bf0d/64 scope link valid_lft forever preferred_lft forever 100: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo inet6 ::1/128 scope host valid_lft forever preferred_lft forever
+```
